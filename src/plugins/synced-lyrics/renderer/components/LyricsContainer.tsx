@@ -8,6 +8,8 @@ import { PlainLyrics } from './PlainLyrics';
 
 import { hasJapaneseInString, hasKoreanInString } from '../utils';
 import { currentLyrics, lyricsStore } from '../../providers';
+import { translateBatch } from '../../translator/translation';
+import { config } from '../renderer';
 
 export const [debugInfo, setDebugInfo] = createSignal<string>();
 export const [currentTime, setCurrentTime] = createSignal<number>(-1);
@@ -16,15 +18,42 @@ export const [currentTime, setCurrentTime] = createSignal<number>(-1);
 export const LyricsContainer = () => {
   const [hasJapanese, setHasJapanese] = createSignal<boolean>(false);
   const [hasKorean, setHasKorean] = createSignal<boolean>(false);
+  const [translations, setTranslations] = createSignal<Array<{
+    translation: string;
+    learningItems: Array<{
+      word: string;
+      meaning: string;
+    }>;
+  }>>([]);
 
-  createEffect(() => {
+  createEffect(async () => {
     const data = currentLyrics()?.data;
     if (data) {
       setHasKorean(hasKoreanInString(data));
       setHasJapanese(hasJapaneseInString(data));
-    } else {
+
+      if (data.lines) {
+        if (config()?.translation && hasJapanese()) {
+          try {
+            const lines = data.lines.map((line) => line.text);
+            const results = await translateBatch(
+              config()?.openRouterApiKey,
+              lines
+            );
+            setTranslations(results);
+          } catch (error) {
+            console.error('Translation error:', error);
+          }
+        }
+      }
+      else {
+        setTranslations([]);
+      }
+    }
+    else {
       setHasKorean(false);
       setHasJapanese(false);
+      setTranslations([]);
     }
   });
 
@@ -57,7 +86,14 @@ export const LyricsContainer = () => {
       <Switch>
         <Match when={currentLyrics().data?.lines}>
           <For each={currentLyrics().data?.lines}>
-            {(item) => <SyncedLine line={item} hasJapanese={hasJapanese()} hasKorean={hasKorean()} />}
+            {(item, index) => (
+              <SyncedLine 
+                line={item} 
+                hasJapanese={hasJapanese()} 
+                hasKorean={hasKorean()} 
+                translation={translations()[index()]}
+              />
+            )}
           </For>
         </Match>
 

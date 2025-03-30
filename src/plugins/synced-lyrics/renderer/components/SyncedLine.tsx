@@ -20,6 +20,13 @@ interface SyncedLineProps {
   line: LineLyrics;
   hasJapanese: boolean;
   hasKorean: boolean;
+  translation?: {
+    translation: string;
+    learningItems: Array<{
+      word: string;
+      meaning: string;
+    }>;
+  };
 }
 
 export const SyncedLine = (props: SyncedLineProps) => {
@@ -93,7 +100,6 @@ export const SyncedLine = (props: SyncedLineProps) => {
         <div
           class="text-lyrics"
           ref={(div: HTMLDivElement) => {
-            // TODO: Investigate the animation, even though the duration is properly set, all lines have the same animation duration
             div.style.setProperty(
               '--lyrics-duration',
               `${props.line.duration / 1000}s`,
@@ -149,6 +155,44 @@ export const SyncedLine = (props: SyncedLineProps) => {
                 }}
               </For>
             </span>
+          </Show>
+
+          <Show when={config()?.translation && props.hasJapanese}>
+            <span class="translation">
+              <Show when={props.translation?.translation}>
+                <For each={props.translation?.translation.split(' ')}>
+                  {(word, index) => (
+                    <span
+                      style={{
+                        'transition-delay': `${index() * 0.05}s`,
+                        'animation-delay': `${index() * 0.05}s`,
+                      }}
+                    >
+                      <yt-formatted-string
+                        text={{
+                          runs: [{ text: `${word} ` }],
+                        }}
+                      />
+                    </span>
+                  )}
+                </For>
+              </Show>
+            </span>
+          </Show>
+
+          <Show
+            when={config()?.learning && props.translation?.learningItems.length}
+          >
+            <div class="learning-items">
+              <For each={props.translation?.learningItems}>
+                {(item) => (
+                  <div class="learning-item">
+                    <span class="word">{item.word}</span>
+                    <span class="meaning">{item.meaning}</span>
+                  </div>
+                )}
+              </For>
+            </div>
           </Show>
         </div>
       </div>

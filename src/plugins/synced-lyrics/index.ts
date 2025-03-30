@@ -21,6 +21,9 @@ export default createPlugin({
     defaultTextString: '♪',
     lineEffect: 'fancy',
     romanization: true,
+    translation: true,
+    learning: true,
+    openRouterApiKey: undefined,
   } satisfies SyncedLyricsPluginConfig as SyncedLyricsPluginConfig,
 
   menu,

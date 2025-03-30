@@ -1,4 +1,7 @@
+import prompt from 'custom-electron-prompt';
+
 import { t } from '@/i18n';
+import promptOptions from '@/providers/prompt-options';
 
 import type { MenuItemConstructorOptions } from 'electron';
 import type { MenuContext } from '@/types/contexts';
@@ -144,6 +147,46 @@ export const menu = async (
         ctx.setConfig({
           romanization: item.checked,
         });
+      },
+    },
+    {
+      label: 'Translation',
+      type: 'checkbox',
+      checked: config.translation,
+      click(item) {
+        ctx.setConfig({
+          translation: item.checked,
+        });
+      },
+    },
+    {
+      label: 'Learning',
+      type: 'checkbox',
+      checked: config.learning,
+      click(item) {
+        ctx.setConfig({
+          learning: item.checked,
+        });
+      },
+    },
+    {
+      label: 'OpenRouter API Key',
+      click: async () => {
+        const output = await prompt(
+          {
+            title: 'OpenRouter API Key',
+            type: 'input',
+            value: config.openRouterApiKey,
+            ...promptOptions(),
+          },
+          ctx.window,
+        );
+
+        if (output) {
+          ctx.setConfig({
+            openRouterApiKey: output,
+          });
+        }
       },
     },
     {

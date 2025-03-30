@@ -8,6 +8,9 @@ export type SyncedLyricsPluginConfig = {
   showLyricsEvenIfInexact: boolean;
   lineEffect: LineEffect;
   romanization: boolean;
+  translation: boolean;
+  learning: boolean;
+  openRouterApiKey: string | undefined;
 };
 
 export type LineLyricsStatus = 'previous' | 'current' | 'upcoming';
@@ -19,6 +22,11 @@ export type LineLyrics = {
 
   text: string;
   status: LineLyricsStatus;
+  translation?: string;
+  learningItems?: Array<{
+    word: string;
+    explanation: string;
+  }>;
 };
 
 export type LineEffect = 'fancy' | 'scale' | 'offset' | 'focus';

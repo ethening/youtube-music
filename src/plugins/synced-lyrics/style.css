@@ -80,6 +80,38 @@
     font-size: calc(var(--lyrics-font-size) * 0.7) !important;
     font-style: italic !important;
   }
+
+  & .text-lyrics > .translation {
+    color: var(--ytmusic-text-secondary) !important;
+    font-size: calc(var(--lyrics-font-size) * 0.7) !important;
+    font-style: italic !important;
+  }
+
+  & .text-lyrics > .learning-items {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  & .text-lyrics > .learning-items > .learning-item {
+    margin: 0.2em 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+  }
+
+  & .text-lyrics > .learning-items > .learning-item > .word {
+    color: var(--ytmusic-text-primary) !important;
+	font-size: calc(var(--lyrics-font-size) * 0.7) !important;
+    font-weight: bold;
+  }
+
+  & .text-lyrics > .learning-items > .learning-item > .meaning {
+    color: var(--ytmusic-text-secondary) !important;
+    font-size: calc(var(--lyrics-font-size) * 0.7) !important;
+  }
 }
 
 .plain-lyrics .romaji {
